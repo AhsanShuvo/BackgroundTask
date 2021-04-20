@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+</div>
+
+<div>
+    <input type="button" class="btn btn-primary" value="Start Processing" id="processing-btn" onclick="location.href='@Url.Action("StartUploading", "Home")'" />
+</div>
+<script type="text/javascript">
+    $(function () {
+        $("#processing-btn").click(function () {
+            $(this).prop("disabled", true);
+        });
+    });
+
+</script>

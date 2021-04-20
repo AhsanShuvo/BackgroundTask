@@ -1,0 +1,48 @@
+﻿
+@{
+    ViewData["Title"] = "Progress";
+}
+
+<h1>Processing Progress</h1>
+
+<div class="progress" id="prg">
+    <div class="progress-bar progress-bar-striped" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+
+    </div>
+</div>
+
+<div class="alert mt-3" id="alert-message" role="alert">
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        var url = window.location.href;
+        var urlSegments = url.split('/');
+        var fileId = urlSegments[urlSegments.length - 1];
+        function getStatus() {
+            $.ajax({
+                type: "GET",
+                url: '/Home/ProcessingStatus/' + fileId,
+                contentType: "application/json; charset=UTF-8",
+                success: function (response) {
+                    if (response.uploadedChunk != "100") {
+                        var percent = response.uploadedChunk + "%";
+                        $("#prg .progress-bar").css({ "width": percent }).html(percent);
+                        window.setTimeout(getStatus, 5000);
+                    } else {
+                        $("#prg .progress-bar").css({ "width": "100%" }).removeClass("progress-bar-striped").html("Completed");
+                        $("#alert-message").addClass("alert-success").html("Processing Completed");
+                    }
+                },
+                statusCode: {
+                    404: function () {
+                        $("#prg").css({ "display": "none" });
+                        $("#alert-message").addClass("alert-danger").html("Item Not Found!");
+                    }
+                }
+            });
+        }
+        getStatus();
+    });
+
+</script>
